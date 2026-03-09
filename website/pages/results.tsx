@@ -1,15 +1,23 @@
+import fs from "fs";
+import path from "path";
 import Layout from "../components/Layout";
-import rawResults from "../../results/model_results.json";
 import type { ResultsFile, MetricSet } from "../types/results";
 
-const results = rawResults as ResultsFile;
+type Props = { data: ResultsFile };
 
-export default function ResultsPage() {
-  const metrics: MetricSet = results.metrics;
+export async function getStaticProps(): Promise<{ props: Props }> {
+  const filePath = path.resolve(process.cwd(), "../results/model_results.json");
+  const raw = fs.readFileSync(filePath, "utf8");
+  const data: ResultsFile = JSON.parse(raw);
+  return { props: { data } };
+}
+
+export default function ResultsPage({ data }: Props) {
+  const metrics: MetricSet = data.metrics;
   return (
     <Layout>
       <h1 className="text-3xl font-bold">Results</h1>
-      <p className="mt-3 text-gray-300">Latest benchmark snapshot: {results.metadata.attacks} attacks.</p>
+      <p className="mt-3 text-gray-300">Latest benchmark snapshot: {data.metadata.attacks} attacks.</p>
       <div className="mt-6 grid gap-3 md:grid-cols-2">
         {Object.entries(metrics).map(([metric, value]) => (
           <div key={metric} className="rounded-lg border border-gray-800 bg-panel p-4">

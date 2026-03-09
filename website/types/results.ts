@@ -6,6 +6,14 @@ export type MetricSet = {
   cognitive_overload_rate: number;
 };
 
+export type ResultEntry = {
+  attack_id: string;
+  campaign_id: string;
+  model: string;
+  output: string;
+  flags: Record<string, boolean>;
+};
+
 export type ResultsFile = {
   metadata: {
     models: string[];
@@ -13,4 +21,5 @@ export type ResultsFile = {
   };
   metrics: MetricSet;
   metrics_by_model: Record<string, MetricSet>;
+  results: ResultEntry[];
 };
